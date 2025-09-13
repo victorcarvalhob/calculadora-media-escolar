@@ -2,7 +2,7 @@
 
 [![GitHub](https://img.shields.io/badge/GitHub-Repo-181717?logo=github)](https://github.com/victorcarvalhob/calculadora-media-escolar) [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Online-brightgreen)](https://victorcarvalhob.github.io/calculadora-media-escolar/)
 
-> Uma **calculadora de média escolar** simples feita com HTML, CSS e JavaScript — construída como projeto de estudo para praticar manipulação do DOM, validação básica e design responsivo. A simplicidade é proposital; funcionalidades mais avançadas serão adicionadas à medida que eu for evoluindo nos estudos. 🚀
+> Uma **calculadora de média escolar** simples construída com HTML, CSS e JavaScript como projeto de estudo — foco em manipulação do DOM, validação, acessibilidade e design responsivo. A simplicidade é proposital; novas funcionalidades serão adicionadas conforme eu evoluir nos estudos. 🚀
 
 ---
 
@@ -28,8 +28,23 @@
 ## 🛠️ Tecnologias
 
 * HTML5
-* CSS3 (responsividade + animações simples)
-* JavaScript (ES6+)
+* CSS3 (responsividade, transições e micro-interações)
+* JavaScript (ES6+) — manipulação do DOM, validação e acessibilidade
+
+---
+
+## 🧾 Atualizações recentes
+
+**Refatoração (feat)**
+
+* Remoção de `onclick` inline — uso de `form` + `addEventListener` para melhor semântica e usabilidade.
+* Validação robusta por campo (nome obrigatório, notas numéricas entre 0 e 10).
+* Mensagens de erro por campo e destaque visual de inputs inválidos (`.input-erro`).
+* Acessibilidade: `aria-live` e `aria-invalid` adicionados; `role="status"` no resultado para leitores de tela.
+* Pequena melhoria de UX: estado de processamento "Calculando..." e botão de limpar (`Limpar`).
+* Proteção básica contra injeção de HTML no nome do aluno (escape).
+
+Essas mudanças deixam o projeto mais legível, testável e acessível — pontos positivos para o portfólio.
 
 ---
 
@@ -42,15 +57,9 @@
   * **Aprovado**: média ≥ 7
   * **Reprovado**: média < 7
 * Feedback visual com classes CSS (`.aprovado`, `.reprovado`) e transições.
+* Validação por campo e indicações visuais de erro.
 * Layout responsivo para dispositivos móveis.
-
----
-
-## 🎯 Por que esse projeto? (objetivo de estudo)
-
-* Praticar captura de inputs e manipulação do DOM com JavaScript.
-* Aplicar estilos modernos e responsivos com CSS.
-* Testar fluxo de desenvolvimento: estrutura do projeto, commits e deploy via GitHub Pages.
+* Acessibilidade básica para leitores de tela.
 
 ---
 
@@ -58,61 +67,28 @@
 
 ```
 calculadora-media-escolar/
-├── index.html      # marcação
-├── style.css       # estilos e responsividade
-└── script.js       # lógica de cálculo
+├── index.html      # marcação semântica (form)
+├── style.css       # estilos, responsividade e micro-interações
+├── script.js       # validação, lógica de cálculo e acessibilidade
+└── images/         # screenshots e assets
 ```
 
 ---
 
 ## ✅ Roadmap / Melhorias planejadas
 
-Este projeto é um **work-in-progress**. Abaixo estão as melhorias que planejo implementar — sinta-se à vontade para sugerir ou contribuir.
+Projeto em andamento — itens que planejo implementar nas próximas versões:
 
-* [ ] Adicionar **mais notas** (não ficar limitado a 2)
-* [ ] Transformar `nota1` e `nota2` em um **array dinâmico de notas**
-* [ ] **Calcular automaticamente** a média para qualquer quantidade de notas
-* [ ] **Salvar histórico de alunos** (localStorage / backend simples)
-* [ ] Criar um **array de registros**: `[{ nome, media, situacao }]`
-* [ ] Exibir uma **lista de todas as médias calculadas** ao final
-* [ ] **Validação de inputs**: impedir campos em branco e notas fora do intervalo válid
-* [ ] Exibir **mensagem de alerta** se algum valor estiver incorreto
-* [ ] Interatividade extra: **reiniciar formulário** sem recarregar a página
-* [ ] UX: **destacar médias altas** com cores diferentes / badges
+* [ ] Adicionar **mais notas** (suporte a N notas)
+* [ ] Transformar `nota1` e `nota2` em um **array dinâmico de notas** e calcular automaticamente
+* [ ] **Média ponderada** (opção de escolher pesos por nota)
+* [ ] **Salvar histórico** de cálculos (localStorage) e mostrar lista de registros
+* [ ] Testes unitários simples (funções de cálculo/validação)
+* [ ] Melhorar a UI/UX: ícones SVG, micro-animações e estados (success/error)
+* [ ] Dark mode com toggle
+* [ ] Aprimorar a acessibilidade (mais testes com leitores de tela)
 
-> As próximas fases incluirão testes unitários rápidos e, possivelmente, integração com um backend leve para persistência.
-
----
-
-## ⚡ Uso rápido (local)
-
-Clone o repositório e abra `index.html` no navegador:
-
-```bash
-# clonar
-git clone https://github.com/victorcarvalhob/calculadora-media-escolar.git
-cd calculadora-media-escolar
-# abrir index.html no navegador (ex: double click ou usar Live Server)
-```
-
----
-
-## 🤝 Como contribuir
-
-Contribuições são bem-vindas — mesmo que seja só uma sugestão de UX ou correção de código.
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature: `git checkout -b feat/nova-funcionalidade`
-3. Faça commits claros e concisos
-4. Abra um pull request descrevendo a mudança
-
-Sugestões simples (issues) ou PRs com pequenas melhorias terão revisão rápida.
-
----
-
-## 🧾 Licença
-
-Este repositório está licenciado sob a [MIT License](LICENSE) — sinta-se livre para estudar, apontar melhorias e reutilizar partes para fins educacionais.
+> As próximas fases poderão incluir integração com um backend leve para persistência e endpoints para compartilhar resultados em formato JSON.
 
 ---
 
