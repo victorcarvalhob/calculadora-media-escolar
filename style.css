@@ -32,6 +32,10 @@ h1 {
     margin-bottom: 20px;
 }
 
+.form-group {
+    margin-top: 12px;
+}
+
 label {
     display: block;
     margin-top: 12px;
@@ -56,6 +60,19 @@ input:focus {
     box-shadow: 0 0 6px rgba(0, 180, 216, 0.5);
 }
 
+.erro {
+    display: block;
+    min-height: 18px;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #e63946;
+}
+
+.input-erro {
+    border-color: #e63946 !important;
+    box-shadow: 0 0 6px rgba(230, 57, 70, 0.15);
+}
+
 button {
     width: 100%;
     margin-top: 20px;
@@ -72,6 +89,23 @@ button {
 button:hover {
     background: linear-gradient(135deg, #00b4d8, #90e0ef);
     transform: translateY(-2px);
+}
+
+.btn-reset {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid rgba(3, 4, 94, 0.08);
+    color: #03045e;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#resultado.loading {
+    font-style: italic;
+    opacity: 0.9;
 }
 
 #resultado {

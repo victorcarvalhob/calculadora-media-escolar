@@ -12,20 +12,32 @@
     <main id="app">
         <h1>Calculadora de Média Escolar</h1>
 
-        <label for="nome">Aluno:</label>
-        <input type="text" id="nome" placeholder="Digite o seu nome">
+        <form id="form-media" novalidate>
+            <div class="form-group">
+                <label for="nome">Aluno:</label>
+                <input type="text" id="nome" placeholder="Digite o seu nome" aria-describedby="erro-nome">
+                <span class="erro" id="erro-nome" aria-live="polite"></span>
+            </div>
 
-        <label for="nota1">Nota 1:</label>
-        <input type="number" id="nota1" placeholder="Digite a primeira nota">
+            <div class="form-group">
+                <label for="nota1">Nota 1:</label>
+                <input type="number" id="nota1" name="nota1" placeholder="Digite a primeira nota" min="0" max="10" step="0.1" aria-describedby="erro-nota1">
+                <span class="erro" id="erro-nota1" aria-live="polite"></span>
+            </div>
 
-        <label for="nota2">Nota 2:</label>
-        <input type="number" id="nota2" placeholder="Digite a segunda nota">
+            <div class="form-group">
+                <label for="nota2">Nota 2:</label>
+                <input type="number" id="nota2" name="nota2" placeholder="Digite a segunda nota" min="0" max="10" step="0.1" aria-describedby="erro-nota2">
+                <span class="erro" id="erro-nota2" aria-live="polite"></span>
+            </div>
+            
+            <button type="submit" id="btn-calcular" aria-label="Calcular média">Calcular Média</button>
+            <button type="button" id="btn-reset" class="btn-reset" aria-label="Limpar campos">Limpar</button>
+        </form>
 
-        <button onclick="calcularMedia()">Calcular Média</button>
-
-        <p id="resultado"></p>
+        <div id="resultado" role="status" aria-live="polite"></div>
     </main>
     
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>
