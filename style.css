@@ -164,6 +164,39 @@ button:hover {
     }
 }
 
+#historico {
+    margin-top: 25px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+#historico h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #03045e;
+    text-align: center;
+}
+
+#lista-historico {
+    padding: 8px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    font-size: 15px;
+    background: #e9f5ff;
+    border: 1px solid #90e0ef;
+}
+
+#lista-historico li.aprovado {
+    border-left: 4px solid #00b4d8;
+}
+
+#lista-historico li.reprovado {
+    border-left: 4px solid #e63946;
+    background: #ffe6e9;
+}
+
 /* ==== RESPONSIVIDADE ==== */
 
 @media (max-width: 768px) {

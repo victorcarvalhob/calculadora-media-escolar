@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nota1Input = document.getElementById('nota1');
     const nota2Input = document.getElementById('nota2');
     const resultado = document.getElementById('resultado');
+    const listaHistorico = document.getElementById('lista-historico');
 
     const erroNome = document.getElementById('erro-nome');
     const erroNota1 = document.getElementById('erro-nota1');
@@ -93,10 +94,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultado.innerHTML = `<strong>✅ ${escapeHtml(nome)}</strong>, sua média é <strong>${media.toFixed(1)}</strong> — <span class="aprovado">Aprovado</span>!`;
                 resultado.classList.remove('reprovado');
                 resultado.classList.add('aprovado');
+                salvarNoHistorico(nome, media.toFixed(1), "Aprovado");
             } else {
                 resultado.innerHTML = `<strong>❌ ${escapeHtml(nome)}</strong>, sua média é <strong>${media.toFixed(1)}</strong> — <span class="reprovado">Reprovado</span>!`;
                 resultado.classList.remove('aprovado');
                 resultado.classList.add('reprovado');
+                salvarNoHistorico(nome, media.toFixed(1), "Reprovado");
             }
 
             resultado.focus(); 
@@ -109,5 +112,38 @@ document.addEventListener('DOMContentLoaded', () => {
         .replaceAll('<', '&lt;')
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#039;');
+    }
+
+    carregarHistorico();
+
+    function salvarNoHistorico(aluno, media, situacao) {
+        const registro = {
+            aluno,
+            media,
+            situacao,
+            data: new Date().toLocaleString('pt-BR')
+        };
+
+        let historico = JSON.parse(localStorage.getItem('historicoMedias')) || [];
+        historico.unshift(registro);
+        localStorage.setItem('historicoMedias', JSON.stringify(historico));
+
+        renderizarHistorico();
+    }
+
+    function carregarHistorico() {
+        renderizarHistorico();
+    }
+
+    function renderizarHistorico() {
+        listaHistorico.innerHTML = "";
+        let historico = JSON.parse(localStorage.getItem('historicoMedias')) || [];
+
+        historico.forEach(item => {
+            const li = document.createElement('li');
+            li.classList.add(item.situacao.toLowerCase());
+            li.textContent = `${item.data} - ${item.aluno}: Média ${item.media} (${item.situacao})`;
+            listaHistorico.appendChild(li);
+        })
     }
 });
