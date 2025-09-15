@@ -61,11 +61,29 @@ input:focus {
 }
 
 .erro {
-    display: block;
-    min-height: 18px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 20px;
     margin-top: 6px;
     font-size: 13px;
+    font-weight: 500;
     color: #e63946;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: all 0.3s ease;
+}
+
+.erro.mostrar {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.erro svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    fill: #e63946;
 }
 
 .input-erro {
