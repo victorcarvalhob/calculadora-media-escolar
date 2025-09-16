@@ -197,6 +197,22 @@ button:hover {
     background: #ffe6e9;
 }
 
+#btn-limpar-historico {
+    margin-top: 12px;
+    background: #e63946;
+    color: white;
+    border: none;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#btn-limpar-historico:hover {
+    background: #d62828;
+}
+
 /* ==== RESPONSIVIDADE ==== */
 
 @media (max-width: 768px) {

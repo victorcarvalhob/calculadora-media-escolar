@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const erroNota2 = document.getElementById('erro-nota2');
 
     const btnReset = document.getElementById('btn-reset');
+    const btnLimparHistorico = document.getElementById('btn-limpar-historico');
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -58,6 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
         resultado.className = '';
         resultado.textContent = '';
     });
+
+    btnLimparHistorico.addEventListener('click', () => {
+        if (confirm("Tem certeza que deseja limpar todo o histórico?")) {
+            localStorage.removeItem('historicoMedias');
+            listaHistorico.innerHTML = "";
+        }
+    })
 
     function mostrarErro(input, span, mensagem) {
         span.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
