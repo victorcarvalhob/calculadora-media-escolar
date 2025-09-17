@@ -13,44 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnReset = document.getElementById('btn-reset');
     const btnLimparHistorico = document.getElementById('btn-limpar-historico');
 
+    // ==== EVENTOS PRINCIPAIS ====
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         limparErros();
 
-        const nome = nomeInput.value.trim();
-        const nota1 = parseFloat(nota1Input.value);
-        const nota2 = parseFloat(nota2Input.value);
+        const dados = {
+            nome: nomeInput.value.trim(),
+            nota1: parseFloat(nota1Input.value),
+            nota2: parseFloat(nota2Input.value),
+        };
 
-        let hasError = false;
-
-        if (!nome) {
-            mostrarErro(nomeInput, erroNome, 'Por favor, insira o nome do aluno.');
-            hasError = true;
+        if (validarFormulario(dados)) {
+            calcularMedia(dados);
         }
-
-        if (!Number.isFinite(nota1)) {
-            mostrarErro (nota1Input, erroNota1, 'Informe a nota 1 (0 a 10).');
-            hasError = true;
-        } else if (nota1 < 0 || nota1 > 10) {
-            mostrarErro(nota1Input, erroNota1, 'A nota 1 deve estar entre 0 a 10.');
-            hasError =  true;
-        }
-
-        if (!Number.isFinite(nota2)) {
-            mostrarErro(nota2Input, erroNota2, 'Informe a nota 2 (0 a 10).');
-            hasError =  true;
-        } else if (nota2 < 0 || nota2 > 10) {
-            mostrarErro(nota2Input, erroNota2, 'A nota 2 deve estar entre 0 a 10.');
-            hasError = true;
-        }
-
-        if (hasError) {
-            const primeiro = form.querySelector('.input-erro');
-            if (primeiro) primeiro.focus();
-            return;
-        }
-
-        calcularMedia(nome, nota1, nota2);
     });
 
     btnReset.addEventListener('click', () => {
@@ -65,7 +41,42 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('historicoMedias');
             listaHistorico.innerHTML = "";
         }
-    })
+    });
+
+    carregarHistorico();
+
+    // ==== FUNÇÕES DE VALIDAÇÃO ====
+    function validarFormulario({ nome, nota1, nota2 }) {
+        let valido = true;
+
+        if (!nome) {
+            mostrarErro(nomeInput, erroNome, 'Por favor, insira o nome do aluno.');
+            valido = false;
+        }
+
+        if (!Number.isFinite(nota1)) {
+            mostrarErro(nota1Input, erroNota1, 'Informe a nota 1 (0 a 10).');
+            valido = false;
+        } else if (nota1 < 0 || nota1 > 10) {
+            mostrarErro(nota1Input, erroNota1, 'A nota 1 deve estar entre 0 a 10.');
+            valido = false;
+        }
+
+        if (!Number.isFinite(nota2)) {
+            mostrarErro(nota2Input, erroNota2, 'Informe a nota 2 (0 a 10).');
+            valido = false;
+        } else if (nota2 < 0 || nota2 > 10) {
+            mostrarErro(nota2Input, erroNota2, 'A nota 2 deve estar entre 0 a 10.');
+            valido = false;
+        }
+
+        if (!valido) {
+            const primeiro = form.querySelector('.input-erro');
+            if (primeiro) primeiro.focus();
+        }
+
+        return valido;
+    }
 
     function mostrarErro(input, span, mensagem) {
         span.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -88,7 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function calcularMedia(nome, nota1, nota2) {
+    // ==== FUNÇÕES DE CÁLCULO E RESULTADO ====
+    function calcularMedia({ nome, nota1, nota2 }) {
         const media = (nota1 + nota2) / 2;
 
         resultado.className = 'loading mostrar';
@@ -98,18 +110,16 @@ document.addEventListener('DOMContentLoaded', () => {
             resultado.classList.remove('loading');
             resultado.classList.add('mostrar');
 
-            if (media >= 7) {
-                resultado.innerHTML = `<strong>✅ ${escapeHtml(nome)}</strong>, sua média é <strong>${media.toFixed(1)}</strong> — <span class="aprovado">Aprovado</span>!`;
-                resultado.classList.remove('reprovado');
-                resultado.classList.add('aprovado');
-                salvarNoHistorico(nome, media.toFixed(1), "Aprovado");
-            } else {
-                resultado.innerHTML = `<strong>❌ ${escapeHtml(nome)}</strong>, sua média é <strong>${media.toFixed(1)}</strong> — <span class="reprovado">Reprovado</span>!`;
-                resultado.classList.remove('aprovado');
-                resultado.classList.add('reprovado');
-                salvarNoHistorico(nome, media.toFixed(1), "Reprovado");
-            }
+            const situacao = media >= 7 ? "Aprovado" : "Reprovado";
+            const statusClass = situacao.toLowerCase();
 
+            resultado.innerHTML = `<strong>${situacao === "Aprovado" ? "✅" : "❌"} ${escapeHtml(nome)}</strong>,
+            sua média é <strong>${media.toFixed(1)}</strong> —
+            <span class="${statusClass}">${situacao}</span>!`;
+
+            resultado.className = `${statusClass} mostrar`;
+            salvarHistorico(nome, media.toFixed(1), situacao);
+            
             resultado.focus(); 
         }, 220);
     }
@@ -122,9 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
         .replaceAll("'", '&#039;');
     }
 
-    carregarHistorico();
-
-    function salvarNoHistorico(aluno, media, situacao) {
+    // ==== FUNÇÕES DE HISTÓRICO ====
+    function salvarHistorico(aluno, media, situacao) {
         const registro = {
             aluno,
             media,
@@ -152,6 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
             li.classList.add(item.situacao.toLowerCase());
             li.textContent = `${item.data} - ${item.aluno}: Média ${item.media} (${item.situacao})`;
             listaHistorico.appendChild(li);
-        })
+        });
     }
 });
