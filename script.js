@@ -16,22 +16,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==== EVENTOS PRINCIPAIS ====
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        limparErros();
 
+        // Se o formulário não for válido, mostra mensagens nativas
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        // Dados já validados pelo HTML5
         const dados = {
             nome: nomeInput.value.trim(),
             nota1: parseFloat(nota1Input.value),
             nota2: parseFloat(nota2Input.value),
         };
 
-        if (validarFormulario(dados)) {
-            calcularMedia(dados);
-        }
+        calcularMedia(dados);
     });
 
     btnReset.addEventListener('click', () => {
         form.reset();
-        limparErros();
         resultado.className = '';
         resultado.textContent = '';
     });
@@ -45,59 +48,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     carregarHistorico();
 
-    // ==== FUNÇÕES DE VALIDAÇÃO ====
-    function validarFormulario({ nome, nota1, nota2 }) {
-        let valido = true;
-
-        if (!nome) {
-            mostrarErro(nomeInput, erroNome, 'Por favor, insira o nome do aluno.');
-            valido = false;
-        }
-
-        if (!Number.isFinite(nota1)) {
-            mostrarErro(nota1Input, erroNota1, 'Informe a nota 1 (0 a 10).');
-            valido = false;
-        } else if (nota1 < 0 || nota1 > 10) {
-            mostrarErro(nota1Input, erroNota1, 'A nota 1 deve estar entre 0 a 10.');
-            valido = false;
-        }
-
-        if (!Number.isFinite(nota2)) {
-            mostrarErro(nota2Input, erroNota2, 'Informe a nota 2 (0 a 10).');
-            valido = false;
-        } else if (nota2 < 0 || nota2 > 10) {
-            mostrarErro(nota2Input, erroNota2, 'A nota 2 deve estar entre 0 a 10.');
-            valido = false;
-        }
-
-        if (!valido) {
-            const primeiro = form.querySelector('.input-erro');
-            if (primeiro) primeiro.focus();
-        }
-
-        return valido;
-    }
-
-    function mostrarErro(input, span, mensagem) {
-        span.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M12 2a10 10 0 1 0 10 10A10.01142 10.01142 0 0 0 12 2Zm0 14a1.25 1.25 0 1 1 1.25-1.25A1.25142 1.25142 0 0 1 12 16Zm1-4.75a1 1 0 0 1-2 0v-5a1 1 0 0 1 2 0Z"/>
-        </svg>
-        <span>${mensagem}</span>`;
-        span.classList.add('mostrar');
-        input.classList.add('input-erro');
-        input.setAttribute('aria-invalid', 'true');
-    }
-
-    function limparErros() {
-        [erroNome, erroNota1, erroNota2].forEach((s) => {
-            s.innerHTML = "";
-            s.classList.remove('mostrar');
+    // ==== MENSAGENS PERSONALIZADAS (setCustomValidity) ====
+    [nomeInput, nota1Input, nota2Input].forEach(input => {
+        input.addEventListener('invalid', () => {
+            if (input.validity.valueMissing) {
+                input.setCustomValidity("Este campo é obrigatório.");
+            } else if (input.validity.rangeOverflow) {
+                input.setCustomValidity("O valor máximo permitido é 10.");
+            } else if (input.validity.rangeUnderflow) {
+                input.setCustomValidity("O valor mínimo permitido é 0.");
+            } else if (input.validity.stepMismatch) {
+                input.setCustomValidity("Use casas decimais válidas (ex: 7.5).");
+            } else {
+                input.setCustomValidity("");
+            }
         });
-        [nomeInput, nota1Input, nota2Input].forEach((i) => {
-            i.classList.remove('input-erro');
-            i.removeAttribute('aria-invalid');
-        });
-    }
+
+        input.addEventListener('input', () => input.setCustomValidity(""));
+    })
 
     // ==== FUNÇÕES DE CÁLCULO E RESULTADO ====
     function calcularMedia({ nome, nota1, nota2 }) {
