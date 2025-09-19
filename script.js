@@ -17,8 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        // Se o formulário não for válido, mostra mensagens nativas
-        if (!form.checkValidity()) {
+        // Pega o primeiro campo inválido
+        const campoInvalido = form.querySelector(':invalid');
+        if (campoInvalido) {
+            campoInvalido.focus();
             form.reportValidity();
             return;
         }
@@ -32,11 +34,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         calcularMedia(dados);
     });
+    
+    // Suporte ao envio com Enter em qualquer campo
+    form.addEventListener('keydown', (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            form.requestSubmit();
+        }
+    });
 
     btnReset.addEventListener('click', () => {
         form.reset();
         resultado.className = '';
         resultado.textContent = '';
+        [erroNome, erroNota1, erroNota2].forEach(span => span.textContent = "");
     });
 
     btnLimparHistorico.addEventListener('click', () => {
@@ -49,23 +60,29 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarHistorico();
 
     // ==== MENSAGENS PERSONALIZADAS (setCustomValidity) ====
-    [nomeInput, nota1Input, nota2Input].forEach(input => {
-        input.addEventListener('invalid', () => {
-            if (input.validity.valueMissing) {
-                input.setCustomValidity("Este campo é obrigatório.");
-            } else if (input.validity.rangeOverflow) {
-                input.setCustomValidity("O valor máximo permitido é 10.");
-            } else if (input.validity.rangeUnderflow) {
-                input.setCustomValidity("O valor mínimo permitido é 0.");
-            } else if (input.validity.stepMismatch) {
-                input.setCustomValidity("Use casas decimais válidas (ex: 7.5).");
-            } else {
-                input.setCustomValidity("");
-            }
-        });
+    function mostrarErro(input, spanErro) {
+        let mensagem = "";
+        if (input.validity.valueMissing) {
+            mensagem = "Este campo é obrigatório.";
+        } else if (input.validity.rangeOverflow) {
+            mensagem = "O valor máximo permitido é 10.";
+        } else if (input.validity.rangeUnderflow) {
+            mensagem = "O valor mínimo permitido é 0.";
+        } else if (input.validity.stepMismatch) {
+            mensagem = "Use casas decimais válidas (ex: 7.5).";
+        }
+        spanErro.textContent = mensagem;
+        input.classList.toggle('input-erro', mensagem !== "");
+    }
 
-        input.addEventListener('input', () => input.setCustomValidity(""));
-    })
+    [nomeInput, nota1Input, nota2Input].forEach(input => {
+        const spanErro = document.getElementById(`erro-${input.id}`);
+        input.addEventListener('invalid', () => mostrarErro(input, spanErro));
+        input.addEventListener('input', () => {
+            spanErro.textContent = "";
+            input.classList.remove('input-erro');
+        });
+    });
 
     // ==== FUNÇÕES DE CÁLCULO E RESULTADO ====
     function calcularMedia({ nome, nota1, nota2 }) {
