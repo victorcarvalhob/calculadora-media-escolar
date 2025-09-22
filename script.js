@@ -13,11 +13,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnReset = document.getElementById('btn-reset');
     const btnLimparHistorico = document.getElementById('btn-limpar-historico');
 
+    // ==== Função auxiliar para validar nota ====
+    function validarNota(nota) {
+        return !isNaN(nota) && nota >= 0 && nota <= 10;
+    }
+
     // ==== EVENTOS PRINCIPAIS ====
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        // Pega o primeiro campo inválido
         const campoInvalido = form.querySelector(':invalid');
         if (campoInvalido) {
             campoInvalido.focus();
@@ -25,17 +29,23 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Dados já validados pelo HTML5
         const dados = {
             nome: nomeInput.value.trim(),
             nota1: parseFloat(nota1Input.value),
             nota2: parseFloat(nota2Input.value),
         };
 
+        // Se alguma nota não for válida (fora do intervalo)
+        if (!validarNota(dados.nota1) || !validarNota(dados.nota2)) {
+            resultado.className = "mostrar reprovado";
+            resultado.textContent = "❌ Insira valores entre 0 e 10 para as notas.";
+            return;
+        }
+
         calcularMedia(dados);
     });
     
-    // Suporte ao envio com Enter em qualquer campo
+    // Suporte ao envio com Enter
     form.addEventListener('keydown', (e) => {
         if (e.key === "Enter") {
             e.preventDefault();
@@ -59,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     carregarHistorico();
 
-    // ==== MENSAGENS PERSONALIZADAS (setCustomValidity) ====
+    // ==== MENSAGENS PERSONALIZADAS ====
     function mostrarErro(input, spanErro) {
         let mensagem = "";
         if (input.validity.valueMissing) {
@@ -83,6 +93,37 @@ document.addEventListener('DOMContentLoaded', () => {
             input.classList.remove('input-erro');
         });
     });
+
+    // ==== FEEDBACK EM TEMPO REAL ====
+    function atualizarFeedback() {
+        const n1 = parseFloat(nota1Input.value);
+        const n2 = parseFloat(nota2Input.value);
+
+        if (validarNota(n1) || validarNota(n2)) {
+            const soma = (validarNota(n1) ? n1 : 0) + (validarNota(n2) ? n2 : 0);
+            const qtd =  (validarNota(n1) ? 1 : 0) + (validarNota(n2) ? 1 : 0);
+            const mediaParcial = soma / qtd;
+
+            let situacao = "";
+            let statusClass = "";
+
+            if (qtd === 2) {
+                situacao = mediaParcial >= 7 ? "Aprovado" : "Reprovado";
+                statusClass =  situacao.toLowerCase();
+            }
+
+            resultado.className = "mostrar " + statusClass;
+            resultado.innerHTML = `Média Parcial: <strong>${mediaParcial.toFixed(1)}</strong>
+            ${situacao ? `— <span class="${statusClass}">${situacao}</span>` : ""}`;
+        } else {
+            resultado.className = "";
+            resultado.textContent = "";
+        }
+    }
+
+    [nota1Input, nota2Input].forEach(input => {
+        input.addEventListener("input", atualizarFeedback);
+    })
 
     // ==== FUNÇÕES DE CÁLCULO E RESULTADO ====
     function calcularMedia({ nome, nota1, nota2 }) {
